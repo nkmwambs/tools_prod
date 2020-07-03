@@ -996,15 +996,15 @@ class Partner extends CI_Controller
 	 * @author: Onduso
 	 * @date: 16/5/2020
 	 */
-	function remove_dct_files_in_temp()
+	function remove_dct_files_in_temp($voucher_number)
 	{
 
 		//Hash the folder to make user depended
-		$hash_folder_name = $this->session->login_user_id . date('Y-m-d'); //.random_int(10,1000000);
-		$hash = md5($hash_folder_name);
+		// $hash_folder_name = $this->session->login_user_id . date('Y-m-d') . $voucher_number; //.random_int(10,1000000);
+		// $hash = md5($hash_folder_name);
 
 		//Folder path
-		$storeFolder = BASEPATH . DS . '..' . DS . 'uploads' . DS . 'temps' . DS . $hash;
+		$storeFolder = BASEPATH . DS . '..' . DS . 'uploads' . DS . 'temps' . DS . $this->temp_folder_hash($voucher_number);
 
 		//Loop the $hash directory and delete the selected file
 		//$data = urldecode($file);
@@ -1049,11 +1049,20 @@ class Partner extends CI_Controller
 		}
 	}
 
-	function check_if_temp_session_is_empty()
+	function temp_folder_hash($voucher_number){
+		$hash_folder_name = $this->session->login_user_id . date('Y-m-d') . $voucher_number; //.random_int(10,1000000);
+		$hash = md5($hash_folder_name);
+
+		return $hash;
+	}
+
+	function check_if_temp_session_is_empty($voucher_number)
 	{
 
-		if ($this->session->upload_session) {
-			$storeFolder = BASEPATH . DS . '..' . DS . 'uploads' . DS . 'temps' . DS . $this->session->upload_session;
+		$storeFolder = BASEPATH . DS . '..' . DS . 'uploads' . DS . 'temps' . DS . $this->temp_folder_hash($voucher_number);
+
+		if (file_exists($storeFolder)) {
+			
 			$this->delete_empty_folder($storeFolder);
 		}
 
@@ -1064,27 +1073,27 @@ class Partner extends CI_Controller
 	 * @author: Onduso
 	 * @date: 16/5/2020
 	 */
-	function create_uploads_temp()
+	function create_uploads_temp($voucher_number)
 	{
 
 		//Hash the folder to make user depended
-		$hash_folder_name = $this->session->login_user_id . date('Y-m-d'); //.random_int(10,1000000);
-		$hash = md5($hash_folder_name);
+		// $hash_folder_name = $this->session->login_user_id . date('Y-m-d') . $voucher_number; //.random_int(10,1000000);
+		// $hash = md5($hash_folder_name);
 
 		//Folder for temp and call the upload_files method to temperarily hold files on server
-		$storeFolder = 'uploads' . DS . 'temps' . DS . $hash;
+		$storeFolder = 'uploads' . DS . 'temps' . DS . $this->temp_folder_hash($voucher_number);
 
 		if (
 			is_array($this->upload_files($storeFolder)) &&
 			count($this->upload_files($storeFolder)) > 0
 		) {
-			$info = ['temp_id' => $hash];
+			//$info = ['temp_id' => $hash];
 
 			$files_array = array_merge($this->upload_files($storeFolder), $info);
 
-			if (!$this->session->has_userdata('upload_session')) {
-				$this->session->set_userdata('upload_session', $hash);
-			}
+			// if (!$this->session->has_userdata('upload_session')) {
+			// 	$this->session->set_userdata('upload_session', $hash);
+			// }
 			echo json_encode($files_array);
 		} else {
 			echo 0;
@@ -1118,7 +1127,7 @@ class Partner extends CI_Controller
 
 		$final_file_path = 'uploads' . DS . 'dct_documents' . DS . $this->session->center_id . DS . $month_folder . DS . $voucher_number;
 
-		$this->session->unset_userdata('upload_session');
+		//$this->session->unset_userdata('upload_session');
 
 		return rename($temp_dir_name, $final_file_path);
 	}
@@ -1128,7 +1137,7 @@ class Partner extends CI_Controller
 		if ($this->session->userdata('admin_login') != 1)
 			redirect(base_url(), 'refresh');
 		//Populate header elements //icpNo,TDate,Fy,VNumber,Payee,Address,VType,ChqNo,TDescription,totals,unixStmp
-
+		
 		$rmk = get_phrase('voucher_posting_failure');
 
 		$data['icpNo']  = $this->input->post('KENo');
@@ -1243,8 +1252,11 @@ class Partner extends CI_Controller
 			//Move file to dct_document folder only when database insert is completed successful
 			if ($this->db->trans_status() === TRUE) {
 
-				$hashed_folder = $this->session->upload_session;
-				$temp_dir_name = 'uploads' . DS . 'temps' . DS . $hashed_folder;
+				// $hash_folder_name = $this->session->login_user_id . date('Y-m-d') . $this->input->post('VNumber'); //.random_int(10,1000000);
+				// $hash = md5($hash_folder_name);
+
+				//$hashed_folder = $this->session->upload_session;
+				$temp_dir_name = 'uploads' . DS . 'temps' . DS . $this->temp_folder_hash($this->input->post('VNumber'));
 				$voucher_number = $this->input->post('VNumber');
 				$voucher_date = $this->input->post('TDate');
 
