@@ -335,7 +335,7 @@
 
 	function check_if_temp_session_is_empty() {
 		// Check if temps session is not empty
-		var url = "<?= base_url() ?>ifms.php?/partner/check_if_temp_session_is_empty";
+		var url = "<?= base_url() ?>ifms.php?/partner/check_if_temp_session_is_empty/"+$("#Generated_VNumber").val();
 
 		$.get(url, function(response) {
 			//alert(response);
@@ -354,7 +354,7 @@
 
 
 		var myDropzone = new Dropzone("#myDropzone", {
-			url: "<?= base_url() ?>ifms.php?/partner/create_uploads_temp",
+			url: "<?= base_url() ?>ifms.php?/partner/create_uploads_temp/"+$("#Generated_VNumber").val(),
 			paramName: "fileToUpload", // The name that will be used to transfer the file
 			maxFilesize: 5, // MB
 			uploadMultiple: true,
@@ -380,7 +380,7 @@
 		myDropzone.on('removedfile', function(file) {
 
 			/* here do AJAX call to the server ... */
-			var url = "<?= base_url() ?>ifms.php/partner/remove_dct_files_in_temp/";
+			var url = "<?= base_url() ?>ifms.php/partner/remove_dct_files_in_temp/"+$("#Generated_VNumber").val();
 			var file_name = file.name;
 			$.ajax({
 				//async: false,
