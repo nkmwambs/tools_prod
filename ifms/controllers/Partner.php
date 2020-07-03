@@ -1258,12 +1258,14 @@ class Partner extends CI_Controller
 				// $hash = md5($hash_folder_name);
 
 				//$hashed_folder = $this->session->upload_session;
-				$temp_dir_name = 'uploads' . DS . 'temps' . DS . $this->temp_folder_hash($this->input->post('VNumber'));
-				$voucher_number = $this->input->post('VNumber');
-				$voucher_date = $this->input->post('TDate');
+				
+				// $temp_dir_name = 'uploads' . DS . 'temps' . DS . $this->temp_folder_hash($this->input->post('VNumber'));
+				// $voucher_number = $this->input->post('VNumber');
+				// $voucher_date = $this->input->post('TDate');
 
-				if($this->input->post('VTypeMain') == 'UDCTB' || $this->input->post('VTypeMain') == 'UDCTC')
-					$this->move_temp_files_to_dct_document($temp_dir_name, $voucher_date, $voucher_number);
+				// if($this->input->post('VTypeMain') == 'UDCTB' || $this->input->post('VTypeMain') == 'UDCTC')
+				// 	$this->move_temp_files_to_dct_document($temp_dir_name, $voucher_date, $voucher_number);
+
 			} else {
 				//input error to log file
 
