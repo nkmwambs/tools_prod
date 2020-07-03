@@ -1115,6 +1115,8 @@ class Partner extends CI_Controller
 
 		$month_folder = date('Y-m', strtotime($voucher_date));
 
+		if (!file_exists('uploads' . DS . 'dct_documents'))
+			mkdir('uploads' . DS . 'dct_documents');
 
 		if (!file_exists('uploads' . DS . 'dct_documents' . DS . $this->session->center_id))
 			mkdir('uploads' . DS . 'dct_documents' . DS . $this->session->center_id);
